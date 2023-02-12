@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HarmonyLib;
 using ReventureModdingHelper.Patches;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace ReventureModdingHelper.Tools
     public class EndingCreator
     {
         public EndingTypes Type;
+        public EndingData Data;
 
         public EndingCreator(EndingTypes type)
         {
@@ -17,6 +19,12 @@ namespace ReventureModdingHelper.Tools
         public EndingCreator(string modId, string name)
         {
             Type = Endings.GetEndingType(modId, name);
+        }
+
+        public EndingCreator SetData(EndingData data)
+        {
+            Data = data;
+            return this;
         }
 
         public void Register()
@@ -29,6 +37,57 @@ namespace ReventureModdingHelper.Tools
             GameObject ebh = new GameObject("EndingBehaviour" + (int) Type);
             EndingBehaviour eb = ebh.AddComponent<EndingBehaviour>();
             return eb;
+        }
+    }
+
+    public class EndingDataCreator
+    {
+        public EndingData CurrentData;
+        
+        public EndingDataCreator(EndingTypes type)
+        {
+            CurrentData = new EndingData()
+            {
+                endingType = type
+            };
+            CurrentData.endingType = type;
+        }
+
+        public EndingDataCreator SetText(string title, string subtitle, string hint, string intro)
+        {
+            EndingStrings strings = new EndingStrings()
+            {
+                title = title,
+                narration = subtitle,
+                hint = hint,
+                nextItroText = intro
+            };
+            Traverse.Create(CurrentData).Field<EndingStrings>("endingStrings").Value = strings;
+            return this;
+        }
+
+        public EndingDataCreator SetImage(Sprite image)
+        {
+            CurrentData.endingPic = image;
+            return this;
+        }
+
+        public EndingDataCreator AddSkinChange(HeroSkinTypes type)
+        {
+            CurrentData.skinToChange = type;
+            CurrentData.changeSkinMode = ChangeSkinModes.OnLoadScreen;
+            return this;
+        }
+
+        public EndingDataCreator SetDaysPassed(int days)
+        {
+            CurrentData.amountOfDaysPassed = days;
+            return this;
+        }
+        
+        public EndingData Build()
+        {
+            return CurrentData;
         }
     }
     
