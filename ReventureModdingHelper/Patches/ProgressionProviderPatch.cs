@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using MelonLoader;
 
 namespace ReventureModdingHelper.Patches
 {
@@ -10,7 +9,8 @@ namespace ReventureModdingHelper.Patches
         {
             if ((int) ending > 102)
             {
-                __result = Atto.Core.Get<IProgressionService>().GetEndingData(EndingTypes.ClimbMountain);
+                if(RMH.EndingRegister.ContainsKey(ending))
+                    __result = RMH.EndingRegister[ending].Data;
             }
         }
     }

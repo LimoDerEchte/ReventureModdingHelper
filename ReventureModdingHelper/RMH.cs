@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using MelonLoader;
+using ReventureModdingHelper.Tools;
 using UnityEngine;
 
 namespace ReventureModdingHelper
 {
     public static class BuildInfo
     {
-        public const string Name = "RMH";
+        public const string Name = "ReventureModdingHelper";
         public const string Description = "An API for Reventure mod developers"; 
         public const string Author = "LimoDerEchte"; 
         public const string Company = null; 
@@ -18,8 +19,21 @@ namespace ReventureModdingHelper
     
     public class RMH : MelonMod
     {
+        public static Dictionary<EndingTypes, EndingCreator> EndingRegister = new Dictionary<EndingTypes, EndingCreator>();
         public static Dictionary<ItemTypes, ItemAction> ItemActions = new Dictionary<ItemTypes, ItemAction>();
         public static float FloatCooldown;
+
+
+        public override void OnInitializeMelon()
+        {
+            new EndingCreator("test", "stoneDrop").SetData(
+                new EndingDataCreator(Endings.GetEndingType("test", "stoneDrop")).SetText(
+                        "Stone Drop",
+                        "Sometimes you slip... and sometimes you slip with a rock in your hands!",
+                        "Dwayne Johnson",
+                        "After multiple surgeries and a lot of hospital debt, the normal life began again.")
+                    .SetDaysPassed(450).AddSkinChange(HeroSkinTypes.Injured).SetImage(Utils.LoadNewSprite("test/stone.png")).Build()).Register();
+        }
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {

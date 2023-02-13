@@ -29,13 +29,15 @@ namespace ReventureModdingHelper.Tools
 
         public void Register()
         {
-            
+            RMH.EndingRegister.Add(Type, this);
         }
 
         public EndingBehaviour BuildEndingBehaviour()
         {
             GameObject ebh = new GameObject("EndingBehaviour" + (int) Type);
             EndingBehaviour eb = ebh.AddComponent<EndingBehaviour>();
+            eb.endingData = Data;
+            eb.RefreshEndingName();
             return eb;
         }
     }
